@@ -1,5 +1,5 @@
-def increment(number,by):
-    return number + 1
+name = "Joe" #This is a local variable
+def greet():
+    print(name)
 
-result = increment(2,1)
-print(result)
+greet()
