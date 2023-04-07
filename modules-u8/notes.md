@@ -2,7 +2,7 @@
 
 ## 1- Creating Modules
 
-We have the following classes:
+We have the following function:
 
 ```python
 #File: app.py
@@ -12,7 +12,7 @@ def calc_shipping():
     pass
 ```
 
-And we want to relocate this classes in a file called sales.py
+And we want to relocate this functions in a file called sales.py
 
 ```python
 #File: sales.py
@@ -62,7 +62,7 @@ If we run the _app.py_ program this will create a new folder:
 
 ![compiled_python_files2](images/compiled_python_files2.png)
 
-In this new folder (`__pycache__`) we a list of the modules that we import into our program.
+In this new folder (`__pycache__`) we have a list of the modules that we import into our program.
 So currently we have the compiled version of the sales module.
 
 The reason of why python stores these compiled files in this stored folder is to speed up  module loading. So next time we load our program, python will look at the content of this folder, and if we do have the compiled version of the module, python will simply load that compiled version.
@@ -78,7 +78,7 @@ import sales
 
 Python will look for a file called _sales.py_.
 
-I f we use the following `sys.path` python will give us an array with the multiple paths to find a module.
+If we use the following `sys.path` python will give us an array with the multiple paths to find a module.
 The first element in this array represents the current folder.
 
 So when python sees an import statement, it will search all thesedirectories to find this module. As soon asit finds the module, our search stops there.  
@@ -130,4 +130,20 @@ form ecommerce import sales
 
 sales.calc_shipping()
 sales.calc_tax()
+```
+
+## 5- Sub-packages
+
+As our program grows with want to divide the packages in sub-packages. For example let's imagine that the ecommerce package growed a lot, now it has so files and folders.
+
+Now we create a new folder called _shopping_ and we move the `sales.py` file to that folder.
+
+![subpackages1](images/subpackages1.png)
+
+And now we re-write the `app.py` program as follows:
+
+```python
+from ecommerce.shopping import calc_shipping
+
+calc_shipping()
 ```
