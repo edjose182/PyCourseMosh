@@ -1,4 +1,12 @@
+print("Sales initialized",__name__)
+
 def calc_tax():
-    pass
+    print("Calculating taxes")
 def calc_shipping():
-    pass
+    print("Calculating shipping")
+
+if __name__ == "__main__":
+    print("Sales started")
+    calc_tax()
+
+

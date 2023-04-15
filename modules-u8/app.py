@@ -1,3 +1,1 @@
-from ecommerce.shopping import calc_shipping
-
-calc_shipping()
+from ecommerce.shopping import sales
