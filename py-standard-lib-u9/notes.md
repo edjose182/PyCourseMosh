@@ -484,3 +484,48 @@ with open("data.csv") as file:
 
 
 ## 8- Working woth JSON Files 
+
+Here is an example of how to create a **JSON** structure on python:
+
+```python
+import json
+
+movies = [
+    {"id": 1, "title": "Terminator", "year": 1989},
+    {"id": 2, "title": "Kindergarten Cop", "year": 1993}
+]
+
+data = json.dumps(movies)
+
+print(data)
+```
+
+To create the _json_ file we need to use the `Path` object:
+
+```python
+import json
+from pathlib import Path
+
+movies = [
+    {"id": 1, "title": "Terminator", "year": 1989},
+    {"id": 2, "title": "Kindergarten Cop", "year": 1993}
+]
+
+data = json.dumps(movies)
+
+print(data)
+
+Path("movies.json").write_text(data)
+```
+
+To read the data from a _json_ file it is necessary to use the `loads` method:
+
+```python
+import json
+from pathlib import Path
+
+data = Path("movies.json").read_text()
+movies = json.loads(data)
+print(movies)
+```
+
