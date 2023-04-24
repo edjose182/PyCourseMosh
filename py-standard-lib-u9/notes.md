@@ -291,3 +291,196 @@ print(md_files)
 To search recursevily we have to use `rglob()`. This will give us the folders and their childrens.
 
 ## 4- Working with Files
+
+There are some useful methods to use when you are working with files, here is a list of methods that you can use:
+
+- `exists()`
+
+It will tell if a specific file exists in a given path.
+
+```python
+from pathlib import Path
+
+path = Path("/home/edjose2206/Desktop/githubProjects/PyCourseMosh/py-standard-lib-u9/app.ipynb")
+
+path.exists() #True
+```
+
+- `rename()`
+
+It allows to rename a given file.
+
+```python
+from pathlib import Path
+
+path = Path("app.ipynb")
+
+path.rename("app.py")
+```
+
+- `unlink()`
+
+You can delete a file by using the `unlink()` method.
+
+```python
+from pathlib import Path
+
+path = Path("app.ipynb")
+
+path.unlink("app.py")
+```
+
+- `stat()`
+
+It will return a file information.
+
+```python
+from pathlib import Path
+
+path = Path("app.ipynb")
+
+path.stat()
+```
+
+To print human readable time it is necesary to use the ctime library.
+
+```python
+from pathlib import Path
+
+from time import ctime
+
+path = Path("app.ipynb")
+
+print(ctime(path.stat().st_ctime)) #This is the creation time
+```
+
+- `read_bytes()`
+
+Returns the content of the fileas bytes object when representing binary data.
+
+```python
+from pathlib import Path
+
+from time import ctime
+
+path = Path("notes.md")
+
+file_data = path.read_text()
+
+print(file_data)
+```
+
+- `read_text()`
+
+Returns the content of the file as a string.
+
+```python
+from pathlib import Path
+
+from time import ctime
+
+path = Path("notes.md")
+
+file_data = path.read_text()
+
+print(file_data)
+```
+
+- `write_text`()
+
+This method is use it to write data to a file.
+
+### Copy a file
+
+To copy a file, the best thing to do is to use the shell utilities. This module combines a number of high level operations for copying and moving files. 
+
+``` python
+import shutil
+```
+
+## 5- Working with ZIP files
+
+To create a _zip_ file we can do something similar to this:
+
+```python
+from pathlib import Path
+from zipfile import ZipFile
+
+zip = ZipFile("files.zip","w") #Create a zip file object. The "w" is to write
+
+for path in Path("images").rglob("*.*"): #The rglob return an object that can be
+    zip.write(path)                      #iterate it
+zip.close()
+```
+
+The previous code can be written as follows:
+
+```python
+from pathlib import Path
+from zipfile import ZipFile
+
+with ZipFile("files.zip","w") as zip: #Create a zip file object. The "w" is to write
+    for path in Path("images").rglob("*.*"): #The rglob return an object that can be
+        zip.write(path)                      #iterate it
+```
+
+To read the _zip_ file we can use the following code:
+
+```python
+from pathlib import Path
+from zipfile import ZipFile
+
+with ZipFile("files.zip") as zip:
+    print(zip.namelist()) #Return a list with all the files inside the .zip file
+```
+
+To extract all the files from the _zip_ file we can use the `extract()` method:
+
+```python
+from pathlib import Path
+from zipfile import ZipFile
+
+with ZipFile("files.zip") as zip:
+     zip.extractall("extracted_files")
+```
+
+## 6- Working with CSV Files
+
+To create or read a _csv_ file we can use the csv module. Here is an example of how you can create a _csv_ file:
+
+```python
+import csv
+
+with open("data.csv","w") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Transaction_ID","Price","Amount"])
+    writer.writerow([1000,1,5])
+    writer.writerow([1001,2,15])
+```
+
+To read the _csv_ file it is necessary to use the `reader` method.
+
+```python
+import csv
+
+with open("data.csv") as file:
+    reader = csv.reader(file)
+    print(list(reader))
+```
+
+Something important to take into account is that the numbers are expresed as **strings** an to be used as strings is necessary to use change them manually.
+
+The result from the reader method is iterable but you only can iterates the result once.
+
+```python
+import csv
+
+with open("data.csv") as file:
+    reader = csv.reader(file)
+    for row in reader:
+        print(row)
+    #print(list(reader))
+```
+
+
+## 8- Working woth JSON Files 
