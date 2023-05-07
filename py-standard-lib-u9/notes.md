@@ -483,7 +483,7 @@ with open("data.csv") as file:
 ```
 
 
-## 8- Working woth JSON Files 
+## 8- Working with JSON Files
 
 Here is an example of how to create a **JSON** structure on python:
 
@@ -529,3 +529,37 @@ movies = json.loads(data)
 print(movies)
 ```
 
+## 8- Working with SQLite Database
+
+SQLite is a very lightweight database that we use for storing data on an application. It's often technology of choice for small applications like apps that we run on phones and tablets. So it allows us to easily store our data in a strcuture format with a table of rows and columns.
+
+Let's write the code to create a DB to store the info inside the `movies.js` file.
+
+```python
+#Imports
+import sqlite3
+import json
+from pathlib import Path
+
+#Extract json file info into the movies variable
+data = Path("movies.json").read_text()
+movies = json.loads(data)
+
+#Create database
+with sqlite3.connect("db.sqlite3") as conn: #This opens the database
+    command = "INSERT INTO Movies VALUES (?,?,?)" #Info is stored in a table
+                                                  #called Movies. The ? in
+                                                  #the command are place
+                                                  #holders for the value
+                                                  #to supply to the table
+    for movie in movies:
+        conn.execute(command,tuple(movie.values()))
+        print(tuple(movie.values()))
+    conn.commit() # This closes the database
+
+    #This will print an error because there isn't a table called Movies
+```
+
+To create the table, it is necessary to use the SQLite program. Here is the link with the `.exe` that you can use to install it: [SQLite_download](https://sqlitebrowser.org/dl/)
+
+After creating the Table we should be able to write the info into the DB.
