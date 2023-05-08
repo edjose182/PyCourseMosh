@@ -483,7 +483,7 @@ with open("data.csv") as file:
 ```
 
 
-## 8- Working with JSON Files
+## 7- Working with JSON Files
 
 Here is an example of how to create a **JSON** structure on python:
 
@@ -563,3 +563,179 @@ with sqlite3.connect("db.sqlite3") as conn: #This opens the database
 To create the table, it is necessary to use the SQLite program. Here is the link with the `.exe` that you can use to install it: [SQLite_download](https://sqlitebrowser.org/dl/)
 
 After creating the Table we should be able to write the info into the DB.
+
+To read the information in the database we will use the following code:
+
+```python
+#Read the database
+with sqlite3.connect("db.sqlite3") as conn: #This opens the database
+    command = "SELECT * FROM Movies" #Info is stored in a table
+                                                  #called Movies. The ? in
+                                                  #the command are place
+                                                  #holders for the value
+                                                  #to supply to the table
+    cursor = conn.execute(command) #cursor is a iterable variable
+    for row in cursor:
+        print(row)
+
+#(1, 'Terminator', 1989)
+#(2, 'Kindergarten Cop', 1993)
+```
+
+## 9- Working with Timestamps
+
+THere are two modules that we can use to work with dates and times. 
+
+- `datetime`: It gives us date/time objects with attributes like year, month, and so on.
+
+- `time`: It will give us methods to work with time.
+
+### time
+
+Th time module can be used to get the time at the moment when the `time()` method is called. Here is an example:
+
+```python
+#Imports
+import time
+print(time.time())
+#1683500116.1324465
+```
+
+The timestamp _1683500116.1324465_ in human date is equal to: 
+
+```text
+Assuming that this timestamp is in seconds:
+GMT: Sunday, May 7, 2023 10:55:16.132 PM
+Your time zone: Sunday, May 7, 2023 5:55:16.132 PM GMT-05:00 DST
+Relative: 2 minutes ago
+```
+
+Here is a on-line tool that converts the timestamp to human date: [timestamp_converter](https://www.epochconverter.com/)
+
+## 10- Working with DateTimes
+
+### datetime()
+
+To use the _datetime_ it is necessary to call the `datetime` module. To create _datetime_ objects we will count with two approaches:
+
+You can pass the year, month and the date. And optionally we can pss the hour minute and second as well. Here is an example:
+
+```python
+#Imports
+import datetime
+
+datetime.datetime(2023,4,7)
+
+print(datetime) # This return a datetime object
+```
+
+To clear the code a little bit, we can modify the code as follows:
+
+```python
+#Imports
+from datetime import datetime
+
+datetime(2023,4,7)
+
+print(datetime)
+```
+
+With these changes is not necessary to use the `datetime.datetime` notation.
+
+### now()
+
+There is another function called `now` that will return a _datetime_ object with the current time.
+
+```python
+#Imports
+from datetime import datetime
+
+now = datetime.now()
+
+print(now) #2023-05-07 18:16:25.791577
+```
+
+### strptime()
+
+We can also find the `strptime` method. This method is for parsing or converting a date time string. This is particulary useful when we get inout from the useror read it from the file. In both thesee scenarios we're dealing with strings. So our date time values are represented on strings, and we need to convert them to date time objects.
+
+Here is an example:
+
+```python
+#Imports
+from datetime import datetime
+
+date_str = "2023/5/7"
+
+date_obj = datetime.strptime(date_str,"%Y/%m/%d")
+
+print(date_obj)
+```
+
+We used the second argumet `"%Y/%m/%d"` to tell **python** how to parse the values on the date.
+
+### fromtimestamp()
+
+We can also conver _timestamp_ objects to _datetime_ objects. To do it we have to use the `fromtimestamp()` method.
+
+Here is an example:
+
+```python
+#Imports
+from datetime import datetime
+import time
+
+dt = datetime.fromtimestamp(time.time())
+
+print(dt) #2023-05-07 18:34:54.064333
+```
+
+### strftime()
+
+The `strftime()` method is use to convert _datetime_ objects to strings.
+
+Here is an example:
+
+```python
+#Imports
+from datetime import datetime
+import time
+
+dt = datetime.fromtimestamp(time.time())
+
+print(dt.strftime("%Y/%m")) #2023/05
+print(dt.strftime("%Y/%m/%d")) #2023/05/07
+```
+
+## 11- Working with Time Deltas
+
+Inside the `datetime` class, exists the `timedelta` class. This calss is uses to calculate the duration between two _datetime_ objects. Here is an example: 
+
+```python
+#Imports
+from datetime import datetime, timedelta
+
+dt1 = datetime(2018,1,1)
+dt2 = datetime.now()
+
+duration = dt2 - dt1
+
+print(duration) #1952 days, 18:45:25.445932
+```
+
+Now this _timedelta_ object has a few interesting attributes, we have for example `days`. This will return the days value.
+
+Also we have `seconds`, it will return the seconds.
+
+```python
+#Imports
+from datetime import datetime, timedelta
+
+dt1 = datetime(2018,1,1)
+dt2 = datetime.now()
+
+duration = dt2 - dt1
+
+print("days {0}".format(duration.days)) # Days value
+print("seconds {0}".format(duration.seconds)) # Seconds value
+```
