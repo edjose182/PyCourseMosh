@@ -739,3 +739,90 @@ duration = dt2 - dt1
 print("days {0}".format(duration.days)) # Days value
 print("seconds {0}".format(duration.seconds)) # Seconds value
 ```
+
+## 12- Generating Random Values
+
+To randomize value sin python we can use the `random` module.
+
+### random()
+
+Generates a valu between 0 and 1.
+
+```python
+import random
+print(random.random()) #0.056527554795549384
+```
+
+### randint()
+
+Generates a value between _x_ and _y_ (`random.randint(x,y)`).
+
+```python
+import random
+print(random.randint(1,10)) #9
+```
+
+### choice()
+
+Randomly picks one value from an array.
+
+```python
+import random
+print(random.choice([1,2,3,4])) #4
+```
+
+### choices()
+
+Select multiple values from an array.
+
+```python
+import random
+print(random.choices([1,2,3,4],k=2)) #[3, 4]
+```
+
+`k` is the number of elements to be pick.
+
+We can use `choices` to generate a random password:
+
+```python
+import random
+print("".join(random.choices("abcdef123456",k=4)))#b442
+```
+
+If want have more options create a better password we can use the `string` module. This module counts with some methods that can be used the generate a list of strings with all the ascii characters or numbers.
+
+```python
+import random
+import string
+
+print("".join(random.choices(string.ascii_letters + string.digits,k=8)))
+```
+
+### shuffle()
+
+There is also another useful method for shuffling an array. The `shuffle()` method will randomize the order of elements in the array.
+
+```python
+import random
+import string
+
+arr = [1,2,3,4,5,6]
+
+random.shuffle(arr)
+
+print(arr) #[3, 4, 1, 6, 5, 2]
+```
+
+## 13- Opening the Browser
+
+To deploy a browser it is necessary to use the `webbrowser` module.
+
+```python
+import webbrowser
+
+print("Deployment completed")
+
+webbrowser.open("http://google.com")
+```
+
+## 14- Sending Emails
