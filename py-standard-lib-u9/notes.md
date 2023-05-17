@@ -826,3 +826,94 @@ webbrowser.open("http://google.com")
 ```
 
 ## 14- Sending Emails
+
+We need to import a couple of classes to abe to send a e-mail. 1 to create the e-mail message, and the other to connect with a mpa server for sending e-mails.
+
+To create the message we have to use `e-mail` module.
+
+```python
+from email.mime.multipart import MIMEMultipart
+```
+
+MIME stands for: Multipurpose Internet Mail Extensions. And this is the standar that defines the format for e-mail messages. This has nothing to do with python, it's purely a standard ofr defining the format of emails. In this package we have another sub-package that is multi part that exposes a class called `MIMEMultipart`.
+With this object the email message that includes both HTML and plain text content. So when the email clientof the receiver receives this email message if it supports TML it will render the HTML content, otherwise it will render plain text content. 
+
+```python
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+
+message = MIMEMultipart() #Create an object
+message["from"] = "Edgar Campos"
+message["to"] = "edjose2206@gmail.com"
+message["subject"] = "This is a test"
+message.attach(MIMEText("Body"))
+
+with smtplib.SMTP(host="edjose182.gmail.com",port=587) as smtp:
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login("edjose182@gmail.com","Bass2206")
+    smtp.send_message(message)
+    print("Sent...")
+```
+
+If we want to attach image we can modify the code as is shown below:
+
+```python
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from pathlib import  Path
+import smtplib
+
+message = MIMEMultipart() #Create an object
+message["from"] = "Edgar Campos"
+message["to"] = "edjose2206@gmail.com"
+message["subject"] = "This is a test"
+message.attach(MIMEText("Body"))
+message.attach(MIMEImage(Path("image1.png").read_bytes()))
+
+with smtplib.SMTP(host="edjose182.gmail.com",port=587) as smtp:
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login("edjose182@gmail.com","Bass2206")
+    smtp.send_message(message)
+    print("Sent...")
+```
+
+## 15- Templates (emails)
+
+In the last lecture, we added the body of our email like this:
+```python
+message.attach(MIMEText("Body","plain"))
+```
+
+But in real world applications the body of an email cam be several lines of text, you don't want to write all that text here.
+Quite often that text is put in a separate file as a template. And we use HTML to build that template.
+
+```python
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from pathlib import  Path
+from string import Template
+import smtplib
+
+template = Template(Path("template.html").read_text())
+template.substitute()
+
+message = MIMEMultipart() #Create an object
+message["from"] = "Edgar Campos"
+message["to"] = "edjose2206@gmail.com"
+message["subject"] = "This is a test"
+body = template.substitute({"name":"John"})
+message.attach(MIMEText(body,"html"))
+message.attach(MIMEImage(Path("image1.png").read_bytes()))
+
+with smtplib.SMTP(host="edjose182.gmail.com",port=587) as smtp:
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login("edjose182@gmail.com","Bass2206")
+    smtp.send_message(message)
+    print("Sent...")
+```
