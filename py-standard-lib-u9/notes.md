@@ -917,3 +917,40 @@ with smtplib.SMTP(host="edjose182.gmail.com",port=587) as smtp:
     smtp.send_message(message)
     print("Sent...")
 ```
+
+## 16- Command-line Arguments
+
+You might want to create a python program that expands command line arguments.
+
+Like this `app.py -a -b -c`
+
+To do it we need to import the `sys` module. From this module we can use the `argv` method that will return a list with the arguments that we passed to the program.
+
+```python
+#We run this on the terminal: python3 app.py -a -b -c
+
+import sys
+
+print(sys.argv)
+```
+
+This is the resul that we got:
+
+```text
+['app.py', '-a', '-b', '-c']
+```
+
+We can try something interesting with this:
+
+```python
+import sys
+
+print(sys.argv)
+
+if len(sys.argv) == 1:
+    print("USAGE: python3 app.py <password>")
+
+else:
+    password = sys.argv[1]
+    print("Password", password)
+```
