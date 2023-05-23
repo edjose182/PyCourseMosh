@@ -954,3 +954,56 @@ else:
     password = sys.argv[1]
     print("Password", password)
 ```
+
+## 17- Running External Programs
+
+We can use python to run external programs, for this we can use the `subprocess` module.
+A process is basically an instanceprogram. So with this module, we can run another programs. NOw in this module, there are a bunch of functions or methods. Like `call`, `check_call`, `check_output` and so on. All these methods are helper methods to create an instance of the _Popen_ class process. 
+
+Now, these methods have been around for a long time, and they're kind of considered legacy, there is a newer method, and that is the preferred approach, to create an instance of the _Popen_ class.
+That method is called `run`.
+
+The first argument of this method is an array of elements.
+Here is an example:
+
+```python
+import subprocess
+
+subprocess.run(["ls","-l"])
+```
+
+```text
+-rw-r--r-- 1 edjose2206 edjose2206  7284 May 22 21:48 app.ipynb
+-rw-r--r-- 1 edjose2206 edjose2206   163 May 18 22:29 app.py
+-rw-r--r-- 1 edjose2206 edjose2206    50 Apr 23 19:39 data.csv
+-rw-r--r-- 1 edjose2206 edjose2206  8192 May  7 17:39 db.sqlite3
+-rw-r--r-- 1 edjose2206 edjose2206    22 Apr 23 19:18 files.zip
+drwxr-xr-x 2 edjose2206 edjose2206  4096 Apr 15 16:53 images
+-rw-r--r-- 1 edjose2206 edjose2206   172 May  7 17:39 movies.json
+-rw-r--r-- 1 edjose2206 edjose2206 23407 May 18 22:29 notes.md
+-rw-r--r-- 1 edjose2206 edjose2206   126 May 18 21:59 template.html
+```
+
+In the first element of the array we pass the _command_ and in the other elements we pass the _arguments_.
+
+We can get more information about the `subproces`
+
+```python
+import subprocess
+
+completed = subprocess.run(["ls","-l"])
+print("args",completed.args)
+print("returncode",completed.returncode)
+print("stderr",completed.stderr)
+print("stdout",completed.stdout)
+```
+
+`args` is an array that includes the command that we execute.
+
+`returncode` is zero, which means success, any none zero values indicates an error.
+
+`stderr` is equal None because we don't have any errors.
+
+`stdoutput` is also None because we are not capturing the output, the output is automatically printed on the terminal.
+
+<!-- Min 4-->
