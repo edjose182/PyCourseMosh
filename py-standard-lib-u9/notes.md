@@ -1007,3 +1007,7 @@ print("stdout",completed.stdout)
 `stdoutput` is also None because we are not capturing the output, the output is automatically printed on the terminal.
 
 <!-- Min 4-->
+
+To save/use the result from a command that we just use, it is possible to use the following option.
+
+The `run()` method takes quite a few keywrods arguments and all of these have default values, the one we're going to use now is capture output
