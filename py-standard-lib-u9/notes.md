@@ -1010,4 +1010,125 @@ print("stdout",completed.stdout)
 
 To save/use the result from a command that we just use, it is possible to use the following option.
 
-The `run()` method takes quite a few keywrods arguments and all of these have default values, the one we're going to use now is capture output
+The `run()` method takes quite a few keywrods arguments and all of these have default values, the one we're going to use now is capture output.
+
+```python
+import subprocess
+
+completed = subprocess.run(["ls","-l"],capture_output=True)
+print("args",completed.args)
+print("returncode",completed.returncode)
+print("stderr",completed.stderr)
+print("stdout",completed.stdout) # In the sldout is store the information
+                                 # But it is store in a binary format
+```
+
+```text
+args ['ls', '-l']
+returncode 0
+stderr b''
+stdout b'total 64\n-rw-r--r-- 1 edjose2206 edjose2206  1776 May 29 19:35 app.ipynb\n-rw-r--r-- 1 edjose2206 edjose2206   163 May 18 22:29 app.py\n-rw-r--r-- 1 edjose2206 edjose2206    50 Apr 23 19:39 data.csv\n-rw-r--r-- 1 edjose2206 edjose2206  8192 May  7 17:39 db.sqlite3\n-rw-r--r-- 1 edjose2206 edjose2206    22 Apr 23 19:18 files.zip\ndrwxr-xr-x 2 edjose2206 edjose2206  4096 Apr 15 16:53 images\n-rw-r--r-- 1 edjose2206 edjose2206   172 May  7 17:39 movies.json\n-rw-r--r-- 1 edjose2206 edjose2206 25742 May 29 19:29 notes.md\n-rw-r--r-- 1 edjose2206 edjose2206   126 May 18 21:59 template.html\n'
+```
+
+To convert the binary to a string we have to pass another argument to the method.
+
+```python
+import subprocess
+
+completed = subprocess.run(["ls","-l"],
+                           capture_output=True,
+                           text=True) #Converts Binary to string
+print("args",completed.args)
+print("returncode",completed.returncode)
+print("stderr",completed.stderr)
+print("stdout",completed.stdout) 
+```
+
+```text
+args ['ls', '-l']
+returncode 0
+stderr 
+stdout total 64
+-rw-r--r-- 1 edjose2206 edjose2206  1860 May 29 19:37 app.ipynb
+-rw-r--r-- 1 edjose2206 edjose2206   163 May 18 22:29 app.py
+-rw-r--r-- 1 edjose2206 edjose2206    50 Apr 23 19:39 data.csv
+-rw-r--r-- 1 edjose2206 edjose2206  8192 May  7 17:39 db.sqlite3
+-rw-r--r-- 1 edjose2206 edjose2206    22 Apr 23 19:18 files.zip
+drwxr-xr-x 2 edjose2206 edjose2206  4096 Apr 15 16:53 images
+-rw-r--r-- 1 edjose2206 edjose2206   172 May  7 17:39 movies.json
+-rw-r--r-- 1 edjose2206 edjose2206 25742 May 29 19:29 notes.md
+-rw-r--r-- 1 edjose2206 edjose2206   126 May 18 21:59 template.html
+```
+
+As another example we are going to run another python script:
+
+```python
+import subprocess
+
+completed = subprocess.run(["python3","another.py"],
+                           capture_output=True,
+                           text=True) #Converts Binary to string
+print("args",completed.args)
+print("returncode",completed.returncode)
+print("stderr",completed.stderr)
+print("stdout",completed.stdout) 
+```
+
+It is important to mention that we are running the seond script as a child process so the memory space used for each script will be different. Because of this won't use the same variables or info.
+
+If want to check for an error on the command, it is possible to use the `check` argument to see if there is an error and also this will trigger an exeception.
+
+```python
+import subprocess
+
+completed = subprocess.run(["false"],
+                           capture_output=True,
+                           text=True,
+                           check=True)# Check if there is an error in the process
+print("args",completed.args)
+print("returncode",completed.returncode)
+print("stderr",completed.stderr)
+print("stdout",completed.stdout) 
+```
+
+```vbnet
+---------------------------------------------------------------------------
+CalledProcessError                        Traceback (most recent call last)
+Cell In[5], line 3
+      1 import subprocess
+----> 3 completed = subprocess.run(["false"],
+      4                            capture_output=True,
+      5                            text=True,
+      6                            check=True)# Check if there is an error in the process
+      7 print("args",completed.args)
+      8 print("returncode",completed.returncode)
+
+File /usr/lib/python3.9/subprocess.py:528, in run(input, capture_output, timeout, check, *popenargs, **kwargs)
+    526     retcode = process.poll()
+    527     if check and retcode:
+--> 528         raise CalledProcessError(retcode, process.args,
+    529                                  output=stdout, stderr=stderr)
+    530 return CompletedProcess(process.args, retcode, stdout, stderr)
+
+CalledProcessError: Command '['false']' returned non-zero exit status 1.
+```
+
+
+Here is another way of writting the code:
+
+```python
+import subprocess
+
+try:
+    completed = subprocess.run(["false"],
+                               capture_output=True,
+                               text=True,
+                               check=True)# Check if there is an error in the process
+    print("args",completed.args)
+    print("returncode",completed.returncode)
+    print("stderr",completed.stderr)
+    print("stdout",completed.stdout)
+
+except subprocess.CalledProcessError as ex:
+    print(ex)
+```
