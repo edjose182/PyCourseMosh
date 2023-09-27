@@ -427,8 +427,23 @@ FUNCTIONS
 -- More  --
 ```
 
-We can use this command to print the information in a HTML file:
+We can use one of the switch from pydoc command to print the information in a HTML file:
 
 ```bash
 pydoc -w math
 ```
+
+And after running this command we will find the _math.html_ file.
+
+There is another interesting switch, for loading the documentation for this application, as well as python standard library in a web server.
+
+So we run the following command:
+
+```bash
+pydoc -p 1232
+```
+
+This will initialize a web server on `localhost:1234`.
+
+If we open the host the web browser, it will show a GUI with the information of the whole packages that we are using.
+
