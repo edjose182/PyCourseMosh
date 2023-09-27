@@ -295,3 +295,45 @@ pipenv update <package_name>
 
 ## 8- Publishing Packages
 
+WIP
+
+## 9- Docstrings
+
+In Python we have a special format for documentating our code, called _docstring_ or documentation string. 
+
+It's basically a string with triple quotes  (`"""`) that we add right after the declaration of a function or class or variable. This is different from using comments, because we should be using comments to explain why we have done things in a certain way.
+
+Here is an example how document a module:
+
+```python
+""" This module provides functions to convert a PDF to text.""" 
+
+def convert(path):
+    """
+    Convert the given PDF to text.
+
+    Paramters:
+    path (str): The Path to a PDF file.
+
+    Returns:
+    str: The content of the PDF file as text.
+    """
+    print("pdf2text")
+```
+
+```python
+class Converter:
+    """ A simple converter for converting PDFs to text."""
+
+    def convert(self,path):
+    """
+    Convert the given PDF to text.
+
+    Paramters:
+    path (str): The Path to a PDF file.
+
+    Returns:
+    str: The content of the PDF file as text.
+    """
+    print("pdf2text")
+```
