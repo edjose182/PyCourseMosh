@@ -3,7 +3,7 @@
 class Converter():
     """This class is used to define the PDF file to convert."""
 
-    def text_upload(text:str):
+    def text_upload(text):
         """
         This method upload the text to a repo
         
@@ -17,7 +17,6 @@ class Converter():
         print("The text was uploaded")
 
         return True
-
 
 def convert(path:str):
     """
