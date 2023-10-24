@@ -58,3 +58,45 @@ pipenv install requests
 
 We use this package to send http requests.
 
+```python
+import requests
+
+url = "https://api.yelp.com/v3/businesses/search"
+api_key = "Dy6YtUIGTCaDBoUFuYJLU9HwOKqvPGQ579ky53jC4ffztIdFEQC_a2S9oqTrjQEbGJe3jNmwHcPLAuVJHzKlBK2poVgCaXiX5j-s8PlwE-omYdhYLjUfkmeIhCkeZXYx"
+headers = {
+    "Authorization":"bearer " + api_key
+}
+params = {
+    "term":"Barber",
+    "location":"NYC"
+}
+response = requests.get(url=url,headers=headers,params=params,verify=False)#False is used to fix an issue
+
+#print(response.text)
+
+result = response.json()
+businesses = response.json()["businesses"]
+
+for business in businesses:
+    print(business["name"])
+
+names = [business["name"] for business in businesses if business["rating"] > 4.5]
+
+print(names)
+```
+
+It was necessary to add the `verify` parameter to avoid problems with the authentication.
+
+## 5- Hiding API Keys
+
+In the previous implmentation was stored the API key in the source code. There is a problem with this. If this code is added, to a version control system like git and publish in Github, this API key is visible to anyone who has access to that Github repository and that means they can create an application, a malicious application and use the API key to pretend to be us. That's not good. So if they violate any of the policies of Yelp, we'll be in trouble.
+
+So to prevent this, it is necessary to extract the API key from the code and put itin a separeate file, and execute that file from git. Here is how:
+
+1. Create a new file called _config.py_. In this file we'll have all kinds of configuration parameters for our application
+
+2. Move the _API_ to the _config.py_ file
+
+3. Include the `api_key` variable importing it from the _config.py_ module.
+
+4. Exclude this from git. By adding _config.py_ file to the _.gitignore_ file.

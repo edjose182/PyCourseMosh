@@ -1,9 +1,9 @@
 import requests
+import config
 
 url = "https://api.yelp.com/v3/businesses/search"
-api_key = "Dy6YtUIGTCaDBoUFuYJLU9HwOKqvPGQ579ky53jC4ffztIdFEQC_a2S9oqTrjQEbGJe3jNmwHcPLAuVJHzKlBK2poVgCaXiX5j-s8PlwE-omYdhYLjUfkmeIhCkeZXYx"
 headers = {
-    "Authorization":"bearer " + api_key
+    "Authorization":"bearer " + config.api_key
 }
 params = {
     "term":"Barber",
@@ -14,6 +14,7 @@ response = requests.get(url=url,headers=headers,params=params,verify=False)#Fals
 #print(response.text)
 
 result = response.json()
+
 businesses = response.json()["businesses"]
 
 for business in businesses:
