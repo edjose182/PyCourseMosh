@@ -100,3 +100,28 @@ So to prevent this, it is necessary to extract the API key from the code and put
 3. Include the `api_key` variable importing it from the _config.py_ module.
 
 4. Exclude this from git. By adding _config.py_ file to the _.gitignore_ file.
+
+## 6- Sending Text Messages
+
+[Twilio](www.twilio.com) is a very popular communication platform for adding voice, video and messaging to your applications. For example, you can quickly make and receive video calls, send text messages and this is parituclary useful for confirming reservations, sending appointment reminders ot promotions, the possibilities are endless.
+They provide an API is perfectly documented and super easy to use. So, we can directly communicate with this API by sending an http requets using the request model. But you they also provide a library that we can install using pip or pipenv this library is essentially a wrapper around the API so it gives us objects and these objects encapsulate all that http communication. So we no longer have to work at a low level of sending http requests to twilio API. We work at ahigher level and more abstract and simplified fashion.
+
+There are objects, these objects have methods, we call them and they in turn, will take care of sending the right http requests to Twilio API. The first thing to do is create a Twilio account.
+
+After creating the account we cereate phone number using the web page. Once we hve the number we can do the following:
+
+1. Create a new project and called "PyText"
+
+2. Create an app to send messages
+
+```python
+from twilio.rest import Client
+
+client = Client(account_sid,auth_token)
+client.messages.create(
+    to="+50688473578",
+    from_="+16562184241",
+    body="Hello Mate"
+)
+```
+
