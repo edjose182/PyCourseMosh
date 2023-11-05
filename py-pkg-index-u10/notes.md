@@ -72,6 +72,12 @@ Like this:
 pipenv install requests
 ```
 
+Or in case you are having issues with the `pipenv` command, you can use the following command:
+
+```bash
+python -m pipenv --venv
+```
+
 The _virtual environment_ is not store in the project's folder. To find it we are going to use the following comman:
 
 ```bash
@@ -88,6 +94,13 @@ To activate the virtual environment, it's necessary to tun the following command
 
 ```bash
 pipenv shell
+```
+
+Or in case that you are having issues:
+
+
+```bash
+python -m pipenv shell
 ```
 
 To deactivate it, use the next command on the terminal:
