@@ -125,3 +125,54 @@ client.messages.create(
 )
 ```
 
+## 7- Web Scraping
+
+Not every website has an _API_ for us to work with. So in situations like that, the only way to tge the data we want is to parse the HTML behin the web page, get rid of all the HMTL tags, and extract the actual data, this technique is called **Web Scraping**. So we scrape all the html tagas and get hte actual data that we want.
+In this lecture we are going to write a program that will extract a list of new list questions on stack overflow.com. We refer to this kind of program as a Web crawler or a Web Spider.
+For this we are going to create a new project (folder) called _PyCrawler_.
+
+In this new project we are going to install the following package:
+
+```bash
+pipenv install beautifulsoup4
+```
+
+This is a very popular Python package for extracting information from HTML and XML files.
+
+We also need to install the requests module to download the Web page that contains the newest questions from Stack Overflow.
+
+```bash
+pipenv install requests
+```
+
+After this we create a file called _app.py_. So the first step is to download the Webpage that contains the newest questions.
+(check the _app.py_ to read more about the next steps.)
+
+If we right click on the first question and select inspect it, we are going to see something like this:
+
+![webpage_html_view](./images/webpage_html_view.PNG)
+
+In here we have an anchor that containts the title of our first question. There is a `div` with and `id="questions"`. This is the container for all our questions. So using out soup object, we need to find all elements, for the class `s-post-summary--content-title`. And that's pretty easy.
+Please take a look at the code. 
+Each element from the `questions` list is of the type _bs4.element.Tag_.
+
+```python
+questions = soup.select(".s-post-summary--content-title") # This returns a list and works as css selector
+print(type(questions[0]))
+
+#Output: <class 'bs4.element.Tag'>
+```
+
+If run the following code we are going to have access to different attributes of the css class.
+
+```python
+questions = soup.select(".s-post-summary--content-title") # This returns a list and works as css selector
+
+print(questions[0].attrs)
+
+#Output: {'class': ['s-post-summary--content-title']}
+```
+
+The Output is a diccitionary with the different values used in the `s-post-summary--content-title` class.
+
+## 8- Browser Automation
