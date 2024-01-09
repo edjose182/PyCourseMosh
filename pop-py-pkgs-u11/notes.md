@@ -176,3 +176,121 @@ print(questions[0].attrs)
 The Output is a diccitionary with the different values used in the `s-post-summary--content-title` class.
 
 ## 8- Browser Automation
+
+**Selenium** is a tool that can automate the browser. So we can write a bunch of scripts to test various functions on a website. 
+In this lecture we are going to use **Selenium** to automate the login process in Github and be sure that the process worked.
+
+First we create a new project called _PySelenium_. For this project we follow the next steps:
+
+1. Create the virtual environment: `python -m pipenv shell`
+2. Download _pipenv_: `pip install pipenv`
+3. Download the **Selenium**: `pipenv install selenium`
+
+Next, we need a driver. A drier is a piece of software to automate a specific browsr, for all these popular browsers like Chrome, Firefox and son on, we have a web driver that we need to manually download.
+
+So we head over to [pypi.org](https://pypi.org/) and search for **Selenium**. In the drivers section we can find the different drivers that can be download it ([Selenium website](https://pypi.org/project/selenium/)).
+
+We select the driver for Chrome and download the _.zip_ file for Windows. And after downloading the file we move it to the C: folder.
+
+Now we use the following peace of code to acces to the github webpage
+
+```python
+from selenium import webdriver
+import time #This is go give us time to see what is happening with the 
+            # Browser
+browser = webdriver.Chrome()
+browser.get("https://github.com/")
+time.sleep(5) #Let us actually see something
+```
+
+After this we need the script to select the "Sign in" option. We can find elements by theri id, class, name and tag. So if we inspect this element, we should find an anchor with some classes but none of this classes uniquely identifies this link, because some of then are used in other places.
+
+So for this case the onl way to find this element it is by its text.
+
+For this it was necessary to import `By`
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time #This is go give us time to see what is happening with the 
+            # Browser
+browser = webdriver.Chrome()
+browser.get("https://github.com/")
+time.sleep(5) #Let us actually see something
+
+#Section of the code to find element
+signin_link =  browser.find_element(By.LINK_TEXT,"Sign in")
+signin_link.click()
+time.sleep(5) #Let us actually see something
+```
+
+And with little more of code we can insert the user and the password to enter the Github account:
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time #This is go give us time to see what is happening with the 
+            # Browser
+browser = webdriver.Chrome()
+browser.get("https://github.com/")
+time.sleep(1) #Let us actually see something
+
+#Section of the code to find element
+signin_link =  browser.find_element(By.LINK_TEXT,"Sign in")
+signin_link.click()
+time.sleep(1) #Let us actually see something
+
+#Section to introduce the user
+username_box = browser.find_element(By.ID,"login_field")
+username_box.send_keys("e-mail@email.com")
+
+#Section to introduce the password
+password_box = browser.find_element(By.ID,"password")
+password_box.send_keys("PaSsWoRd")
+password_box.submit()
+time.sleep(5) #Let us actually see something
+```
+
+To be sure that the code worked, we can created an assertion that checks the user name:
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time #This is go give us time to see what is happening with the 
+            # Browser
+browser = webdriver.Chrome()
+browser.get("https://github.com/")
+time.sleep(1) #Let us actually see something
+
+#Section of the code to find element
+signin_link =  browser.find_element(By.LINK_TEXT,"Sign in")
+signin_link.click()
+time.sleep(1) #Let us actually see something
+
+#Section to introduce the user
+username_box = browser.find_element(By.ID,"login_field")
+username_box.send_keys("e-mail@email.com")
+
+#Section to introduce the password
+password_box = browser.find_element(By.ID,"password")
+password_box.send_keys("PaSsWoRd")
+password_box.submit()
+time.sleep(5) #Let us actually see something
+
+#Section of the code to check user
+assert "edjose182" in browser.page_source
+```
+
+If the user is not found, python will show an Exception.
+
+We can use this other type of assertion to be more specific:
+```python
+profile_link = browser.find_element(By.CLASS_NAME, "Truncate-text")
+link_label = profile_link.get_attribute("innerHTML")
+print(link_label)
+assert "edjose182" in link_label #This is not working
+```
+
+## 9- Working with PDFs
