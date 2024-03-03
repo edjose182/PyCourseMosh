@@ -294,3 +294,507 @@ assert "edjose182" in link_label #This is not working
 ```
 
 ## 9- Working with PDFs
+
+We create a new project called "PyPdf" and install some packages:
+
+1. pip install pipenv
+2. python -m pipenv shell (This creates the enviroment)
+3. pip install pipenv
+4. pipenv install pypdf2
+
+I'm having problems with this lecture. The library used for the lecture is not working as expeceted.
+
+I will move to the next one and try to find a way to implement this.
+
+## 10- Working with Excel Spreadsheets
+
+We create a new project called "PyExcel", download the _transactions.xlsx_ file and install some packages:
+
+1. Create the virtual environment: `python -m pipenv shell`
+2. Download pipenv: `pip install pipenv`
+3. Download the Excel package: `pipenv install openpyxl`
+
+Now when working with spreadsheets, we need to start with a workbook object,we can even create an empty workbook in memory, or load an existing workbook on disc. _openpyxl_ has a workbook class and you can create a new workbook with it.
+
+```python
+import openpyxl
+
+wb = openpyxl.Workbook()
+```
+
+We also have the `load_workbook` function for loading an existing workbook.
+
+In this demos we are going to load the _transaction_ file.
+
+We can use this the packages to get a list with the names of the sheets.
+
+```python
+import openpyxl
+wb = openpyxl.load_workbook("transactions.xlsx")
+print(wb.sheetnames)
+```
+
+For this example we only have one sheet and it's called "Sheet1".
+
+Now we can create a _sheet_ object:
+
+```python
+import openpyxl
+wb = openpyxl.load_workbook("transactions.xlsx")
+print(wb.sheetnames)
+
+sheet = wb["Sheet1"]
+```
+
+Next we need to access an individual cell or a range of cells and that is pretty easy.
+So using square brackets, you can pass the coordinate of a cell.
+
+Let's say for example _A1_ (Column A, Row 1).
+
+```python
+import openpyxl
+wb = openpyxl.load_workbook("transactions.xlsx")
+print(wb.sheetnames)
+
+sheet = wb["Sheet1"]
+
+cell = sheet["a1"]
+```
+
+`cell` is an object that has multiple attributes, E.g. Value, row, colum, coordinate, etc...
+
+```python
+import openpyxl
+
+#wb = openpyxl.Workbook()
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+print(wb.sheetnames)
+
+sheet = wb["Sheet1"]
+
+cell = sheet["a1"]
+print(cell.row) #Prints the row number : 1
+print(cell.column) #Prints the column number :1 
+print(cell.coordinate) #Prints the position of the cell: A1
+```
+
+There is another way to access the information and this is by using a shet object, so instead of creating a new object, we can use the sheet. 
+
+Instead of using square bracket to pass the coordinate, we can call the `cell` function and pass the row and the column.
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+cell = sheet.cell(row=1,column=1)
+```
+
+This second approach is useful if we are iterating over all th rows and columns and you want to dynamically access various cells.
+
+Here is an example.
+
+First, we can use `max_row` and `max_column` to get the total number of rows and columns used by the Excel file. Oce we have this value we can iterate between the different rows and columns.
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+for row in range(1,sheet.max_row+1):
+    for column in range(1, sheet.max_column +1):
+        cell = sheet.cell(row,column)
+        print(cell.value)
+```
+
+Here is the output:
+
+```text
+transaction_id
+product_id
+price
+1001
+1
+5.95
+1002
+2
+6.95
+1003
+3
+7.95
+```
+
+But we can also use square brackets to access a range of cells.
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+sheet["a"] #This will return most all the cells in the "a" column
+```
+
+We can also work with an arrange of columns:
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+columns = sheet["a:c"] #This will return most all the cells in the "a" column
+
+print(columns)
+```
+
+Here are some methods that we should be aware of. One of them is append, and we use that to add a row at the end of this sheet.
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+sheet.append([1,2,3])
+```
+
+Now let's save this workbook.
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+sheet.append([1,2,3])
+
+wb.save("transactions2.xlsx")
+```
+
+## 11- Command Query Separetion Principle
+
+This principle states that our methods or function should either be commands that perform an action to change the state of a sstem or queries that return an answe to the caller without cahnging the state or causing side effects. So our methods should either be commoand or queries but not both.
+
+Let's see this principle in action. So in the last lecture that the `workbook` object has a method called create sheet.
+
+```python
+wb.create_sheet()
+```
+
+This is an example of a command method, because it's responsible for pperforming a task. The task of creating a sheet. As a result of calling this method, the state of our system, in this case, our workbook, changes, so everytime we call it we get a new sheet in this workbook. Now lest take a look at an example of query effect.
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+sheet.append([1,2,3])
+
+wb.save("transactions2.xlsx")
+```
+
+So above we have this sheet that represents the first sheet in the workbook, in the last lecture you learned about the `cell` method, you cab use it to access a cell in a sheet. This is an example of a query method.
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+sheet.cell()
+
+wb.save("transactions2.xlsx")
+```
+
+We use it to acess a given cell. However, this method violates the command query separation principle. Lets see why.
+
+If we write a loop to print the value of all the sales in the first column.
+
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("transactions.xlsx")
+
+sheet = wb["Sheet1"]
+
+for row in range(1,10):
+    cell = sheet.cell(row,1)
+    print(cell.value)
+```
+
+Here is the output:
+
+```text
+transaction_id
+1001
+1002
+1003
+None
+None
+None
+None
+None
+```
+
+Now after the for loop we are going to add new values using the `append()` method.
+And finally save the workbook as "transactions3.xlsx"
+
+The values that included are shown in the last position of the sheet. (Row 10) and not in after the existing values in the sheet.
+
+This is th result of violation of command query separation principle. 
+
+Here is the reason. In the for loop, we're iterating over the first 10 rows to get the cell in the first column. Now in the original spreadsheet, we only had 4 rows, these are the rows, so the heading row followed by 3 data rows. So when we use the for loop to iterate over the first 10 rows, the cell method magially created new cells. In other words, when we call this method (the `cell` method) to access a cell at a gien coordinate. If that cll doesn't exist, this method will create it for us, and this is a violation of command query separation principle, because this is a query method, so it should not change a state or a system, in this case a workbook.
+
+So in other words, we should not have a side effect. So the developer who implemented this method probably had no idea of this very important principle in programming.
+
+So as we can see the violation of this principle can create unexpected issues in our program. It makes it hard to reason about our code and figure out what is happening.
+
+## 12- NumPy
+
+We create a new project called "Numpy" and install some packages:
+
+1. Create the virtual environment: `python -m pipenv shell`
+2. Download pipenv: `pip install pipenv`
+3. Download the Excel package: `pipenv install numpy`
+
+So numPy use Python by bringing super fast multi dimensional arrays that take less memory that uild in lists python. So anytime you want to work with large, multi dimesional arrays, numPy is the vers choice. 
+
+We can use the `array` function to create our multi dimensional arrays.
+
+We can pass a normal list:
+
+```python
+import numpy as np
+np.array([1, 2, 3])
+```
+
+And this will return a numPy array. 
+
+```python
+import numpy as np
+np.array([1, 2, 3])
+print(array)
+print(type(array))
+```
+
+This is the output that we got.
+
+```text
+[1 2 3]
+<class 'numpy.ndarray'>
+```
+
+Our array is of the type _numpy_.
+
+Now lets create a multi dimensional array:
+
+```python
+import numpy as np
+array = np.array([[1, 2, 3],[4, 5, 6]])
+print(array)
+print(type(array))
+```
+
+This is the Ouput, a Matrix with two rows and 3 columns:
+
+```text
+[[1 2 3]
+ [4 5 6]]
+<class 'numpy.ndarray'>
+```
+
+This type of class has an attribute called `shape` and it used to show the dimesions of the Matrix.
+
+```python
+import numpy as np
+array = np.array([[1, 2, 3],[4, 5, 6]])
+print(array.shape) #prints: (2,3)
+```
+
+This packages has a lot of useful methods that we can use to make things easier:
+
+For example, we can initialize an array with only zeros:
+
+```python
+import numpy as np
+
+array_zeros = np.zeros((3,4))
+
+print(array_zeros)
+```
+
+Output:
+
+```text
+[[0. 0. 0. 0.] 
+ [0. 0. 0. 0.] 
+ [0. 0. 0. 0.]]
+```
+
+By default all the numbers are set as floating but we can change this,, we can pass the data type that we want to use to the function:
+
+```python
+import numpy as np
+
+array_zeros = np.zeros((3,4),dtype=int)
+
+print(array_zeros)
+```
+
+The otuput is:
+
+```text
+[[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+```
+
+There is a another method called `ones` and can be used to create a Matrix with only ones:
+
+```python
+import numpy as np
+
+array_ones = np.ones((3,4),dtype=int)
+
+print(array_ones)
+```
+
+The output is:
+
+```text
+[[1 1 1 1]
+ [1 1 1 1]
+ [1 1 1 1]]
+```
+
+We can also create an array with a specific number that we want it to use:
+
+```python
+import numpy as np
+
+array_full = np.full((3,4), 5 ,dtype=int)
+
+print(array_full)
+```
+
+The output is:
+
+```text
+[[5 5 5 5]
+ [5 5 5 5]
+ [5 5 5 5]]
+```
+
+There is also a mehtod to create an array with random values:
+
+```python
+import numpy as np
+
+array_rand = np.random.random((3,4))
+
+print(array_rand)
+```
+
+Here is the output:
+
+```text
+[[0.73906328 0.22790135 0.68248483 0.43806384]
+ [0.08788784 0.03936695 0.7191194  0.21008655]
+ [0.20145095 0.6797499  0.12378291 0.9378971 ]]
+```
+
+Now we can access the different elements of the array by using the index:
+
+```python
+import numpy as np
+
+array_rand = np.random.random((3,4))
+
+print(array_rand)
+print(array_rand[0,0])
+
+```
+
+The output is:
+
+```text
+[[0.9303379  0.28942505 0.21458711 0.73563189]
+ [0.69782706 0.59446942 0.55578635 0.60832952]
+ [0.39800902 0.94947773 0.97450411 0.13648845]]
+0.930337903308149
+```
+
+Something that we can do with the numpy is carry out different actions with the Matrix. Here is an example:
+
+```python
+import numpy as np
+
+array_rand = np.random.random((3,4))
+
+print(array_rand)
+print(array_rand > 1)
+```
+
+```text
+[[0.6542974  0.38948026 0.78897482 0.26271316]
+ [0.31404506 0.07583382 0.62116149 0.10681876]
+ [0.46432461 0.73066759 0.88541936 0.11012045]]
+[[False False False False]
+ [False False False False]
+ [False False False False]]
+```
+
+NumPy arrays supports various kinds of mathematical operations. We can also use boolean expressions, here is an example:
+
+```python
+import numpy as np
+
+array_rand = np.random.random((3,4))
+
+print(array_rand)
+print(array_rand[array_rand > 0.2])
+```
+
+```text
+[[0.89459067 0.67029409 0.48428199 0.19752728]
+ [0.29270503 0.85615365 0.63262512 0.6252742 ]
+ [0.05489593 0.96001134 0.78742268 0.69065507]]
+[0.89459067 0.67029409 0.48428199 0.29270503 0.85615365 0.63262512
+ 0.6252742  0.96001134 0.78742268 0.69065507]
+```
+
+This returns a new array, with only the values that are greater than 0.2.
+
+There also methods what will let use to peform calculations.
+
+```python
+import numpy as np
+
+array_rand = np.random.random((3,4))
+
+print(array_rand)
+print(np.sum(array_rand))
+```
+
+```text
+[[0.85354685 0.02182408 0.12298758 0.17832534]
+ [0.12313617 0.38095086 0.54739048 0.83697437]
+ [0.38199189 0.61902512 0.88005825 0.21735751]]
+5.163568509038422
+```
+
+This returns the result of the sum of all the values in the Matrix.
+
+NumPy provides multidimensional arrays that are super fast and take less memory, plus they support various kinds of mathematical operations that regular python lists don't.
