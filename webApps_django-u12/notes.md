@@ -374,3 +374,75 @@ COMMIT;
 ```
 
 ## 8- Admin
+
+Alright, our database is in good shape. Now the next step is to allow the staff at our imaginary video store to populate the list of movies. So we need to create an administration panel for them.
+
+However, when using Django, we don't have to do this manually. So all Django applications come with a powerful adminstration interface.
+
+In the terminal we are going to run our development server `python3 manage.py runserver`
+
+After running the command we are going to see the following:
+
+![default-window-server](./img/default-window-server.png)
+
+In the URL we are going to add "admin"
+
+![admin-window-server](./img/admin-window-server.png)
+
+This is the entrance to our adminstration panel.
+
+So by default, we get this login screen, this is coming from the auth app that is installed by default. 
+
+In the _settings.py_ file we can find the installed apps:
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'movies.apps.MoviesConfig'
+]
+```
+
+The second app is the _autho app_ and this the app that know everything about autheticating users. And the login screen is implemented inside of that app. SO as you can see, that app is a small reusable package that we are using in this project. By the same token we can create small, reusable apps that other people can use in their projects.
+
+Now back to the login screen, currenlty we don't have any users in our database. So the next step is to create a super user. Now we are going to use another terminal so in that way in the main therminal the server can be running.
+
+Now we are going to run the following command: `python3 manage.py createsuperuser`
+
+Now we need to enter an user, an e-mail and password.
+
+Now if we go to the login screen we can use the user and the password. Once everything is ready we are going to see the following window:
+
+![login-succesful-window](./img/login-succesful-window.png)
+
+Now in here we can manage the list of groups nad users. SO we can put users in different groups like admins, moderators, guest and so on.
+
+If click the users options, the window is going to shows us a table with all the users that has access.
+
+![users-table-view](./img/users-table-view.png)
+
+Now, in the main page we can only manage hte users and groups. We cannot manage our custom models like genre and movies, but we can easily bring them here with only a single line of code.
+
+In the _movies_ app (`PyCourseMosh/webApps_django-u12/vydli/movies/`) we have the admin file and this is where we register the models we want to manage using our administrative interface.
+
+Now in this file we need to import our genre and movie classes.
+
+```python
+from .models import Genre, Movie
+
+admin.site.register(Genre)
+admin.site.register(Movie)
+```
+
+WIth this we are telling to Django to register these models in the administration interface.
+Now we save the changes and in the main page we are goin to update the window.
+
+![updated-admin-models](./img/updated-admin-models.png)
+
+Now we have the Genre and Movies models in our movies app.
+
+## 9- Customizing the Admin
