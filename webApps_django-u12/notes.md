@@ -446,3 +446,72 @@ Now we save the changes and in the main page we are goin to update the window.
 Now we have the Genre and Movies models in our movies app.
 
 ## 9- Customizing the Admin
+
+We can override the str magic method in the _Genre_ class.
+
+In the movies app, let's open up _models.py_. And here we are going to find the _Genre_ class. In here we can override the str magic method to specify the string representation of a _Genre_ object. So let's define the `__str__` method.
+
+```python
+def __srt__(self):
+    return self.name
+```
+
+We want to use the name of a genre to represent it as a string.
+
+Now we are going to take this to the next level. Let's say you want to add another clomun. To see the _ID_ of each genre, for that we need to go to our movies app and open _admin.py_ module.
+
+We previously registered the genre calss with admin, now to customize how we work with genres in our admin panel, we need to create another class called `genre_admin`. Now to customize the list of genres in admin, we need to create.
+
+```python
+#File: admin.py
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ('id','name')
+
+admin.site.register(Genre,GenreAdmin)
+```
+
+If we refresh the web page (http://127.0.0.1:8000/admin/movies/genre/) we can see that the table looks better now:
+
+![admin-modifcations-1](./img/admin-modifcations-1.png)
+
+Now we can use the user interface to add a new genre.
+I'm going to add Action and Comedy.
+
+>**Info: Minor fix**
+>
+>There was a problem with the version that I was using of Django for Python. I was getting the error show here: [No such table:main.auth_user__old](https://forum.codewithmosh.com/t/no-such-table-main-auth-user-old/2415/3).
+>
+>I tried the next steps to fix the problem:
+>
+>1. Stopped the django webserver running, Ctrl-C
+>2. Delete the db.sqlite3
+>3. Uninstalled Django old verison
+>4. Install latest version of Django with “pip install django”
+>5. Install latest version of Django with “pipenv install django” 
+>6. Issue “python manage.py makemigrations”
+>7. Issue “python manage.py migrate”
+>8. Create a superuser with “python manage.py createsuperuser”
+>9. Issue “python manage.py runserver” (or port 8080)
+
+Now the table looks like this:
+
+![added-genres](./img/added-genres.png)
+
+
+In movies we don't anything yet. Now we are going to add a new movie using the interface.
+
+![adding-new-movie](./img/adding-new-movie.png)
+
+Now the interface let us to select the date that new movie(s) is included but we can hide this.
+
+To do this, we need to create a model admin for movies.
+
+```python
+#File: admin.py
+class MovieAdmin(admin.ModelAdmin):
+    exclude = ('date_created')
+...
+admin.site.register(Movie,MovieAdmin)
+```
+
+## 10- Database Abstraction API
