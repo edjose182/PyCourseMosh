@@ -515,3 +515,99 @@ admin.site.register(Movie,MovieAdmin)
 ```
 
 ## 10- Database Abstraction API
+
+Earlier was built a view function to respond to requests sent to this endpoint: _movies/_.
+
+![hello-world-movie](./img/hello-world-movie.png)
+
+In the previous image is shown the message displayed.
+
+Here we have the _movie_ class we created earlier. As you can see we derived this class from the model class in Django.
+
+```python
+class Movie(models.Model):
+    title = models.CharField(max_length=255)
+    release_year = models.IntegerField()
+    number_in_stock = models.IntegerField()
+    daily_rate = models.FloatField()
+    Genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(default=timezone.now)
+```
+
+But why? Because this model class gives us a bunch of methods for creating, retrieving, updating and deleting objects from our database. So if you want to store a movie object in our database, you simply call one of these methods in our database callaed **save**. The **save** method will internally take care of generating the right SQL statement to update our SQL database. This is what we call a "databse abstraction API". So this model class, gice us an API, which is short for Application Programming Interface, and this API, abstracts away the complexity of working with a database. Now let's see how to use this API to get the list of movie objects from our database.
+
+So in our _movies app_, let's open up the _views_ module.
+
+So here we have the index function taht we created earlier, currently we are returning "Hello World". Now we are going to use our model API to gent all the movie objects in our database. So first on the top, from the models module, in the current folder, let's import the movie class
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Movie
+
+def index(request):
+    Movie.objects.all() #With this statement we get all the movie
+                        #objects in our database
+    return HttpResponse("Hello World!")
+```
+
+When we call `all` at some point Django is going to generate the SQL statement like this
+
+```sql
+SELECT * FROM movies_movie
+```
+
+We also have a method to filte records, so taht is `movie.objects`
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Movie
+
+def index(request):
+    Movie.objects.all() #With this statement we get all the movie
+                        #objects in our database
+    Movie.objects.filter()
+    return HttpResponse("Hello World!")
+```
+
+Here we can pass arbitrary keyword arguments like: give me all the movies with release year. 
+
+So let's set `release_year` to 1084.
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Movie
+
+def index(request):
+    Movie.objects.all() #With this statement we get all the movie
+                        #objects in our database
+    Movie.objects.filter(release_year=1984)
+    return HttpResponse("Hello World!")
+```
+
+When we call this at some point Django is going to generate a SQL statement like this:
+
+```SQL
+SELECT * FROM movies_movie WHERE release_year ...
+```
+
+ALso we have methods to get a specific item:
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Movie
+
+def index(request):
+    Movie.objects.all() #With this statement we get all the movie
+                        #objects in our database
+    Movie.objects.filter(release_year=1984)
+    Movie.objects.get(id=1)
+    return HttpResponse("Hello World!")
+```
+
+We aslo have methods for saving movie objects or deleting them from our database. So these methods represent our database abstraction API, that simplified a lot of cases. Now, sometimes we are going to deal with complex queries, if these methods don't do what we need, we can always send raw SQL statements for our database.
+
+## 11- Templates
