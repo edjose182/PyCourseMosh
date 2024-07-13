@@ -3,6 +3,5 @@ from django.shortcuts import render
 from .models import Movie
 
 def index(request):
-    output = Movie.objects.all()
-    #output = [m.title for m in movies] This is not working
-    return HttpResponse(output)
+    movies = Movie.objects.all()
+    return render(request=request,template_name='movies/index.html',context={'movies':movies})

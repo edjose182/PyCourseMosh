@@ -611,3 +611,145 @@ def index(request):
 We aslo have methods for saving movie objects or deleting them from our database. So these methods represent our database abstraction API, that simplified a lot of cases. Now, sometimes we are going to deal with complex queries, if these methods don't do what we need, we can always send raw SQL statements for our database.
 
 ## 11- Templates
+
+Now we are going to learn how to retun HTML from the view function.
+
+In the top of the _views.py_ file we can see we are importing the `render` function. We use this function to render a template.
+
+Now we can use this function to the information in a different way:
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Movie
+
+def index(request):
+    movies = Movie.objects.all()
+    return render(request=request,template_name='indec.html',context={'movies':movies})
+```
+
+Now we need to create the template. In the _Movies_ folder we are going to create a new folder called "templates". By default we should use this name because is the folder that Django uses by default.
+Now we add the "index.html" file to this folder.
+
+In the HTML we can use zen code to generate the HTML easier. Here is an example:
+
+```html
+table.table>thead>tr>th*3
+```
+
+After type this, we use tab to generate the rest of the code:
+
+```html
+<table class="table">
+    <thread>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thread>
+</table>
+```
+
+Now after some changes we will have the follwing code:
+
+```html
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>This is my movie app</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <table class="table">
+            <thread>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Stock</th>
+                    <th>Daily Rate</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>{{movie.title}}</td>
+                    <td>{{movie.Genre}}</td>
+                    <td>{{movie.number_in_stock}}</td>
+                    <td>{{movie.daily_rate}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+        <script src="" async defer></script>
+    </body>
+</html>
+```
+Here is important to point out that.
+
+1. {% %}: It is used to write python code
+2. {{}}: It is is used to declare variables.
+
+## 12- Adding Bootstrap
+
+In this lecture we are going to add boorstrap ou the Vidly application.
+
+Here is the link to the Boostrap web page: [Bootstrap documentation](https://getbootstrap.com/docs/5.3/getting-started/introduction/)
+
+Now in the movies template folder we are going to add a new one called "base". (This file hase the Bootstrap template)
+
+In this file we are going to create a block to wrapper the things that we will like to have a specific format. Like this:
+
+```html
+{% block content %}
+{% endblock %}
+```
+
+Now on _index.html_ we are going to wrap the things that would like have the format that is used on the _base.html_ file.
+
+Similar to this:
+
+```html
+        {% extends "movies/base.html" %}
+        {% block content %}
+        <table class="table">
+            <thread>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Stock</th>
+                    <th>Daily Rate</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>{{movie.title}}</td>
+                    <td>{{movie.Genre}}</td>
+                    <td>{{movie.number_in_stock}}</td>
+                    <td>{{movie.daily_rate}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock%}
+```
+
+We use `extends` to bring the things that we have on the _base.html_ file.
+
+And after this we use `block content` to wrap the elements from the HTML to use this type of format.
+
+## 13- Customizing the Layout
