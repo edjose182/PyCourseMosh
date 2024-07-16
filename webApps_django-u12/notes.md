@@ -828,3 +828,7 @@ New:
 ```python
     {% extends "base.html" %}
 ```
+
+To indicate to Django where is the template we want to use, we need to specify it on the settings file.
+
+
