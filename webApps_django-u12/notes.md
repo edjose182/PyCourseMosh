@@ -753,3 +753,78 @@ We use `extends` to bring the things that we have on the _base.html_ file.
 And after this we use `block content` to wrap the elements from the HTML to use this type of format.
 
 ## 13- Customizing the Layout
+
+Now er are going to add a bootstrap validation form on the top. So on Bootstrap documentation, we are going to go to _Components_. In here we are going to select _Navbar_ and on this page we find various examples of a bootstrap navigation bar. We are going to use the simple navigation bar. Here is the link to the Bootstrap: [Navbar Bootstrap](https://getbootstrap.com/docs/5.3/components/navbar/).
+
+
+Now in out _base.html_, right under body we are going to copy the navbar code:
+
+```html
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Vidly</a>
+  </div>
+</nav>
+```
+
+With these change the web app looks better.
+
+Now we are going to center the table.
+
+Back on the _base.html_, we should wrap the content block inside of a main element with the container class, so with bootstrap. We want to create a main tag with the class container.
+
+```html
+<main class="container">
+    {% block conent %}
+    {% endblock%}
+</main>
+```
+
+Here is the result that we got after these changes:
+
+![navbar-center-table](./img/navbar-center-table.png)
+
+If we want to add vertical borders to the table we can do the following:
+
+Back into the _index.html_, here is our table. And we are going to add another class,
+
+```html
+        <table class="table table-bordered table-hover">
+            <thread>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Stock</th>
+                    <th>Daily Rate</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>{{movie.title}}</td>
+                    <td>{{movie.Genre}}</td>
+                    <td>{{movie.number_in_stock}}</td>
+                    <td>{{movie.daily_rate}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+```
+
+## 14- Sharing a Template Across Multiple Apps
+
+Imthis lecture we are going to learn how to sahre a base template across multiple apps.
+
+Currently, on the **movies** app we have a _base_ template. But we want this to be use on multiple apps. To do to it, we need to move the template in higher place in the project. For this we are going to create a "Templates" folder on the root of our project and to this folder we are going to move the template that we created in the movies app.
+
+Now, in the _index.html_ of the movie app we are going to update the reference that we were using to _base.html_.
+
+Old:
+```python
+    {% extends "movies/base.html" %}
+```
+
+New:
+```python
+    {% extends "base.html" %}
+```
