@@ -6,3 +6,4 @@ pop-py-pkgs-u11/PyText/Lib/*
 pop-py-pkgs-u11/PyText/Scripts
 pop-py-pkgs-u11/config.py
 pop-py-pkgs-u11/PyText/__pycache__/config.cpython-310.pyc
+webApps_django-u12/Pipfile.lock

@@ -831,4 +831,83 @@ New:
 
 To indicate to Django where is the template we want to use, we need to specify it on the settings file.
 
+## 15- URL Parameters
 
+Now, the vidly application currently only displays the list of movies. It would be nice if you could clock on the movie and see it's details.
+
+So, the first thing we need to do is define a URL that takes a parameter like "movies/1" where 1 is the id of the movie.
+
+In our movies app let's open up _urls.py_, here we need to define a new url pattern. 
+
+The Main URL module in our project hands off any URL's that starts with "movies/".
+
+Let's take a look at this. We are going to open the _urls.py_ file located on the vidly folder.
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('movies/',include('movies.urls'))
+]
+```
+
+So we are telling Django that any URL pattern that starts with "movies/" should be handed off to the URL module in the Movies app. 
+
+Now back to the Movies app. 
+
+When we add the parameter `<movie_id>`, that represents an URL that looks like this> `movies/1`. Because all the URLs we're working with in this module, starts with "movies/".
+
+Now we need to map this to the view function:
+
+```python
+urlpatterns = [ #This is the URL configuration
+    path('', views.index,name='movies_index'),
+    path('<movie_id>',views.detail,name='movies_detail')
+]
+```
+
+As a good practice we all gave a name. These names are useful in situations where we have multiple references,to an URL. Let's say "/movies/1". Now for whatever reason, we decide to change this URL to something like this, let's say "old_system/movies/1".
+
+If you have multiple references, multiple hardcoded references to the URL like this, then we'll have to update all those references to the new URL, so that's why we use these names in view. These names should uniquely identify URL's so in our templates, instead of hard coding these URL's we reference then with their names and in the future if you wnat to change a URL we can change it in a single place.
+
+Also as a best rpactive, it's better to _name space_ the name.
+
+Now we are going to create the `detail` function on the _views_ module on the Movies app.
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Movie
+
+def index(request):
+    movies = Movie.objects.all()
+    return render(request=request,template_name='movies/index.html',context={'movies':movies})
+
+def detail(request,movie_id):
+    return HttpResponse(movie_id)
+```
+
+There is a probelm with this, if we pass something like "a" or "b" as or ID parameter the app will accept these values like IDs.
+
+So to avoid this we can use a type converter, like this:
+
+```python
+urlpatterns = [ #This is the URL configuration
+    path('', views.index,name='movies_index'),
+    path('<int:movie_id>',views.detail,name='movies_detail')
+]
+```
+
+## 16- Getting a SIngle Object
+
+We can use our movie model, to get the movie to the given id.
+
+```python
+def detail(request,movie_id):
+    movie = Movie.objects.get(pk=movie_id)
+    return render(request=request,template_name='movies/detail.html',content={'movie':movie})
+```
+
+Now we need to create the template. 
