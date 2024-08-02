@@ -1170,3 +1170,137 @@ When Django sees this, it knows that we are talking abou the movies app.
 ```
 
 ## 19- Creating APIs
+
+When it comes to building PI's in DJango applications, there are basically two popular frameworks, one of them is [django-tastypie](https://django-tastypie.readthedocs.io/en/latest/) and the other one is [djangorestframework](https://www.django-rest-framework.org/).
+
+In the terminal we are going to install `django-tastypie`
+
+```bash
+pipenv install django-tastypie
+```
+
+Now we are going to create a new app in this project.
+
+```bash
+python manage.py startapp api 
+```
+
+Now we need to register this in the list of installed apps. SO, let's go to _settings.py_. On the INSTALLED_APPS section we are going to add the API app.
+
+In this new add we are going to add a new model. So we go to the _models.py_ file to create a movies resource.
+
+```python
+from django.db import models
+from tastypie.resources import ModelResource
+from movies.models import Movie
+
+class MovieResource(ModelResource):
+    class Meta:
+        queryset = Movie.objects.all()
+        resource_name = 'movies'
+```
+
+The next step is to generate our URL endpoints. So in the vidly we are going to modify the URL file.
+
+```python
+# File: vydli/vidly/urls.py
+from django.contrib import admin
+from django.urls import path, include
+from api.models import MovieResource
+
+movie_resource = MovieResource()
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('movies/',include('movies.urls')),
+    path('api/',include(movie_resource.urls))
+]
+```
+
+After this we run the server and use this URL in our browser: `http://127.0.0.1:8000/api/movies/`
+
+We got the following result:
+
+```json
+{
+  "meta": {
+    "limit": 20,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total_count": 2
+  },
+  "objects": [
+    {
+      "daily_rate": 1.95,
+      "date_created": "2024-06-27T03:48:26.187398",
+      "id": 1,
+      "number_in_stock": 5,
+      "release_year": 1985,
+      "resource_uri": "/api/movies/1/",
+      "title": "Terminator"
+    },
+    {
+      "daily_rate": 3,
+      "date_created": "2024-08-02T21:15:10.239720",
+      "id": 2,
+      "number_in_stock": 100,
+      "release_year": 2024,
+      "resource_uri": "/api/movies/2/",
+      "title": "Deadpool and Wolverine"
+    }
+  ]
+}
+```
+
+We can specofy the attributes that we don't to include. Here is how:
+
+```python
+# File: vydli/api/models.py
+from django.db import models
+from tastypie.resources import ModelResource
+from movies.models import Movie
+
+class MovieResource(ModelResource):
+    class Meta:
+        queryset = Movie.objects.all()
+        resource_name = 'movies'
+        excludes = ['date_created']
+```
+
+Now the `date_created` attribute is not shown:
+
+```json
+{
+  "meta": {
+    "limit": 20,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total_count": 2
+  },
+  "objects": [
+    {
+      "daily_rate": 1.95,
+      "id": 1,
+      "number_in_stock": 5,
+      "release_year": 1985,
+      "resource_uri": "/api/movies/1/",
+      "title": "Terminator"
+    },
+    {
+      "daily_rate": 3,
+      "id": 2,
+      "number_in_stock": 100,
+      "release_year": 2024,
+      "resource_uri": "/api/movies/2/",
+      "title": "Deadpool and Wolverine"
+    }
+  ]
+}
+```
+
+## 20- Adding the Home Page
+On the vidly folder we are going to create a new file called _views.py_. 
+
+In this file we are going to define a view function called home that takes a request and here we simply render a template and return it.
