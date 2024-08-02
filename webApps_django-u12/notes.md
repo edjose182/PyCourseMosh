@@ -947,9 +947,9 @@ Every time we have to get a single object and render it, we have to get this pat
 
 We ahve toadd the "try" statement, get the mvoie, render it and then catch an exception of type does not exist, and then raise an http 404 exception.
 
-IN a real applicatuoon,where you habe a lot of view functions, like this detail view function, this pattern end up being so repetitive, so that is why you have a shortcut for that in Django. Django is focused on productivity, so we can build the applications with less code.
+In a real applicatuoon,where you habe a lot of view functions, like this detail view function, this pattern end up being so repetitive, so that is why you have a shortcut for that in Django. Django is focused on productivity, so we can build the applications with less code.
 
-So, on the top of _views.py_, we have this module _django.shortcuts_. FRom this module let's import `get_object_or_404`. This is a function implements the previous mentioned pattern. So we don't have to repet it in every function.
+So, on the top of _views.py_, we have this module _django.shortcuts_. From this module let's import `get_object_or_404`. This is a function implements the previous mentioned pattern. So we don't have to repet it in every function.
 
 So we can simplify find this function like repeat it in every view function. So now we can simplify this function like this:
 
@@ -958,3 +958,215 @@ def detail(request,movie_id):
     movie = get_object_or_404(Movie,pk=movie_id)
     return render(request=request,template_name='movies/detail.html',context={'movie':movie})
 ```
+
+## 18- Referencing URLs
+
+Now, we are going to modify this page and aad a link to each movie. SO we can navigate and see these details.
+
+In the _index.html_, this is where we are rendering our movies. In the first column we render the movie title. Let's add a html anchor here:
+
+```html
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>This is my movie app</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        {% extends "base.html" %}
+
+        {% block content %}
+
+        <table class="table table-bordered">
+            <thread>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Stock</th>
+                    <th>Daily Rate</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>
+                        <a href="/movies/{{movie.id}}">{{movie.title}}</a>
+                    </td>
+                    <td>{{movie.Genre}}</td>
+                    <td>{{movie.number_in_stock}}</td>
+                    <td>{{movie.daily_rate}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock%}
+
+        <script src="" async defer></script>
+    </body>
+</html>
+```
+
+However, while this implementation works it's not the best way to reference URL's. Because earlier it was mentioned that tomorrow it is possible that we change all htese URL's to somehting like this: `/old_system/movies/`. Now technically we should not change URL's because a URL is contract of an application, so if we change URL's any applications that depend on those URL's are going to break.
+
+But the real world is uncpredictable so sometimes these things happen. So there is a better way to reference a URL.
+
+On the _urls_ module, we assigned a name to each URL. Now we can reference these URL's using their names.
+
+```python
+# File: urls.py
+
+from django.urls import path
+
+from . import views #It is better to do it in this way because
+                    #someone can use a different path
+
+urlpatterns = [ #This is the URL configuration
+    path('', views.index,name='movies_index'),
+    path('<int:movie_id>',views.detail,name='movies_detail')
+]
+```
+
+We are going to use the "url" tag. With this tag, we can get an actual URL. So first we pass the name of the URL, in this case movies_detail and after that we can pass any other parameter if they exist. In this case we want to pass _movie.id_.
+
+```html
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>This is my movie app</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        {% extends "base.html" %}
+
+        {% block content %}
+
+        <table class="table table-bordered">
+            <thread>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Stock</th>
+                    <th>Daily Rate</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>
+                        <a href="{% url 'movies_detail' movie.id%}">{{movie.title}}</a>
+                    </td>
+                    <td>{{movie.Genre}}</td>
+                    <td>{{movie.number_in_stock}}</td>
+                    <td>{{movie.daily_rate}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock%}
+
+        <script src="" async defer></script>
+    </body>
+</html>
+```
+
+Now let's take this to the next level. Back to the URL's module, previous was mentioned that it's a good practice to prefix all the names (E.g _movies_index_) with the name of our app, like movies underline. With did that so Django wouldn't accidentally pick a URL with the same name from a different app. Just like we name space our views. So this was a good practice.
+
+However, there is a better way. Here we can set a know variable like "app_name" to the name of this app, let's say movies. DJango is aware of this variable nam,e, now then we set this app name in the patch function so we don't have to repeat movies underscore in multiple places.
+
+```python
+#File: urls.py
+from django.urls import path
+
+from . import views #It is better to do it in this way because
+                    #someone can use a different path
+
+app_name = 'movies'
+
+urlpatterns = [ #This is the URL configuration
+    path('', views.index,name='index'),
+    path('<int:movie_id>',views.detail,name='detail')
+]
+```
+
+Now let's go back to our _index.html_, and instead of using an underline, we use a colon.
+
+When Django sees this, it knows that we are talking abou the movies app.
+
+```html
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>This is my movie app</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        {% extends "base.html" %}
+
+        {% block content %}
+
+        <table class="table table-bordered">
+            <thread>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Stock</th>
+                    <th>Daily Rate</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>
+                        <a href="{% url 'movies:detail' movie.id%}">{{movie.title}}</a>
+                    </td>
+                    <td>{{movie.Genre}}</td>
+                    <td>{{movie.number_in_stock}}</td>
+                    <td>{{movie.daily_rate}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock%}
+
+        <script src="" async defer></script>
+    </body>
+</html>
+```
+
+## 19- Creating APIs
