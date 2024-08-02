@@ -911,3 +911,50 @@ def detail(request,movie_id):
 ```
 
 Now we need to create the template. 
+(The template can be found in the following path: `PyCourseMosh/webApps_django-u12/vydli/movies/templates/movies/detail.html`)
+
+## 17- Raising 404 Errors
+
+The application is working up to this point, but what if we pass an invalid movie ID. For example:
+
+`127.0.0.1:8000/movies/10`
+
+We ge the following error:
+
+![error-not-valid-ID](./img/error-not-valid-ID.png)
+
+This is an exception of type does not exist, that is not good. So the common patterns to handle these situations is to return an http 404 error.
+
+404 is the standard http error, that says the page or the resource we are looking for does not exist. So, to fix this problem, we need to handle this exception and return an http 404 error.
+
+To do this we wrap this in a try block, and then catch the exception. The exception is of type "DoesNotExist" and this exception class is part of our model. 
+
+```python
+# File: views.py
+def detail(request,movie_id):
+    try:
+        movie = Movie.objects.get(pk=movie_id)
+        return render(request=request,template_name='movies/detail.html',context={'movie':movie})
+    except Movie.DoesNotExist:
+        raise Http404()
+```
+
+After implementing this we will get the following message:
+
+![exception-django-message](./img/exception-django-message.png)
+
+Every time we have to get a single object and render it, we have to get this pattern.
+
+We ahve toadd the "try" statement, get the mvoie, render it and then catch an exception of type does not exist, and then raise an http 404 exception.
+
+IN a real applicatuoon,where you habe a lot of view functions, like this detail view function, this pattern end up being so repetitive, so that is why you have a shortcut for that in Django. Django is focused on productivity, so we can build the applications with less code.
+
+So, on the top of _views.py_, we have this module _django.shortcuts_. FRom this module let's import `get_object_or_404`. This is a function implements the previous mentioned pattern. So we don't have to repet it in every function.
+
+So we can simplify find this function like repeat it in every view function. So now we can simplify this function like this:
+
+```python
+def detail(request,movie_id):
+    movie = get_object_or_404(Movie,pk=movie_id)
+    return render(request=request,template_name='movies/detail.html',context={'movie':movie})
+```
