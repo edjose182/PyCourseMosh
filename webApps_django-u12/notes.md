@@ -1304,3 +1304,80 @@ Now the `date_created` attribute is not shown:
 On the vidly folder we are going to create a new file called _views.py_. 
 
 In this file we are going to define a view function called home that takes a request and here we simply render a template and return it.
+
+```python
+from django.shortcuts import render
+
+def home(request):
+    return render(request,'home.html')
+```
+
+Now we need to map this view function to a URL endpoint. So let's go back to the URL module.
+
+First we need to import the view module
+
+```python
+from . import views
+```
+
+Next we include a new URL pattern
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+from api.models import MovieResource
+from . import views
+
+movie_resource = MovieResource()
+
+urlpatterns = [
+    path('',views.home),
+    path('admin/', admin.site.urls),
+    path('movies/',include('movies.urls')),
+    path('api/',include(movie_resource.urls))
+]
+```
+
+Finally we need to create a template. For this we have 2 options:
+
+1. It is to add the templates folder in the Vidly folder, just how added templates to the movies app, but if we do so, we should also register this folder as an app in _settings.py_ because as default this is not registered as an app. It kind of looks like an app, but it is not an app.
+
+So  if we want to register this as an app, we need to add a configuration class just like the movies app:
+
+```python
+#File: vidly/settings.py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'movies.apps.MoviesConfig',
+    'api.apps.ApiConfig'
+]
+```
+
+So we need to add a file called _apps.py_ and in that file, we need to create a class clalled vidly config. After we installed the Vidly app, Django will be able to find the templates in this app.
+
+2. It is put all these general templates like homepage, contact page, adn similar pages inside the main templates folder in this project.
+
+This time we are going to use the second approach. So we are going to add _home.html_ into the templates folder.
+
+```html
+{% extends "base.html"%}
+
+{% block content %}
+    <a href="{%url 'movies:index'%}">Movies</a>
+{% endblock%}
+```
+
+## 21- Getting Ready to Deploy
+
+In the video Mosh used Heroku to deploy the app but Heroku is not free anymore. Something that I can try instead of using this, it is to see if I can use Git instead or use the Raspberry pi for this.
+
+Here is a link of how to deploy Django in a Raspberry pi: [raspberry-pi-django](https://pimylifeup.com/raspberry-pi-django/).
+
+Here is a link of how to deply Django in Github:
+[pload your Django project to GitHub - The Easy Way](https://www.youtube.com/watch?v=fVy9eJzloj8)
+
